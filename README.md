@@ -15,6 +15,8 @@ Works on a computer or a phone, with:
 
 USB drums work in Chrome or Edge on a computer, and in Chrome on Android with a USB-OTG adapter. iPhones and iPads can't read USB drums in any browser, so use the microphone there.
 
+Every lesson and song also has a short YouTube video by a real drum teacher (Drumeo and others) that teaches the same thing, and the **Videos** page lists them all by level, with a few to watch before you start. Videos load only when you press play.
+
 ## On the live site
 
 Everything runs in your browser. What the microphone hears is never sent anywhere, and your progress is saved in that browser on that device. Run the timing check in Setup on each device you play on, and use wired headphones, since Bluetooth adds a delay that throws off your scores.

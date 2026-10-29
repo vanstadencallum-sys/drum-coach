@@ -145,10 +145,11 @@
     if (view === 'level') viewLevel(+arg);
     else if (view === 'lesson') viewLesson(decodeURIComponent(arg || ''));
     else if (view === 'songs') viewSongs();
+    else if (view === 'videos') viewVideos(arg);
     else if (view === 'setup') viewSetup(arg);
     else if (view === 'free') viewFree();
     else viewHome();
-    if (view !== 'setup' || !arg) window.scrollTo(0, 0);
+    if ((view !== 'setup' && view !== 'videos') || !arg) window.scrollTo(0, 0);
     updateBadge();
     if (!P.data.placed) onboarding();
   }
@@ -288,6 +289,7 @@
       <div class="row" style="margin-top:22px">
         ${prev ? `<a class="btn" href="#/level/${n - 1}">← Level ${n - 1}</a>` : ''}
         <span class="spacer"></span>
+        <a class="btn" href="#/videos/${n}">🎬 Videos for this level</a>
         ${nextLv ? `<a class="btn" href="#/level/${n + 1}">Level ${n + 1} →</a>` : ''}
       </div>`;
   }
@@ -324,6 +326,56 @@
       }).join('')}`;
   }
 
+  // ---------- teaching videos ----------
+
+  const ytLink = v => `<a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" rel="noopener">Open on YouTube ↗</a>`;
+  // A YouTube lesson shown as its thumbnail; nothing loads from YouTube until it's clicked (see the click
+  // handler at the bottom). The shared web link can't show YouTube players or pictures, so there it's a link.
+  function videoHtml(v) {
+    const label = `${esc(v.title)} by ${esc(v.channel)}`;
+    if (HOSTED) return `<a class="video" href="https://www.youtube.com/watch?v=${v.id}" target="_blank" rel="noopener" aria-label="Watch ${label} on YouTube"><span class="vplay"></span><span class="vtext">Watch on YouTube</span></a>`;
+    return `<button type="button" class="video" data-yt="${v.id}" aria-label="Play ${label}" style="background-image:url(https://i.ytimg.com/vi/${v.id}/hqdefault.jpg)"><span class="vplay"></span></button>`;
+  }
+  // Put any playing videos back to thumbnails, so they don't play over a lesson.
+  function stopVideos() { $$('iframe.video', app).forEach(f => f.replaceWith(f._thumb)); }
+
+  function videoCard(v, tags, foot) {
+    return `<div class="vcard">${videoHtml(v)}
+      ${tags ? `<div class="tags">${tags}</div>` : ''}
+      <h4>${esc(v.title)}</h4>
+      <p>${esc(v.channel)}${HOSTED ? '' : ` · ${ytLink(v)}`}</p>
+      ${foot ? `<p class="go">${foot}</p>` : ''}
+    </div>`;
+  }
+
+  function viewVideos(focus) {
+    app.innerHTML = `
+      <div class="lesson-head">
+        <div><span class="tag gold">Videos</span>
+          <h1 style="margin-top:8px">Learn from drum teachers</h1>
+          <p class="muted">Short lessons by drum teachers on YouTube, picked to go with each Drum Coach lesson. Watch one, then open the lesson and play it yourself so Drum Coach can check it.${HOSTED ? '' : ' Nothing loads from YouTube until you press play.'}</p></div>
+      </div>
+      <h3 class="vhead" style="margin-top:20px" id="vl-start">Start here</h3>
+      <div class="videos">${C.startVideos.map(v => videoCard(v, `<span class="tag aqua">${esc(v.topic)}</span>`)).join('')}</div>
+      ${C.levels.map(lv => {
+        // A video that goes with several lessons and songs in this level gets one card that lists them all.
+        const byVideo = new Map();
+        lv.items.forEach(it => {
+          const v = C.videoFor(it.id);
+          if (!v) return;
+          if (!byVideo.has(v.id)) byVideo.set(v.id, { v, items: [] });
+          byVideo.get(v.id).items.push(it);
+        });
+        const lessonNo = it => lv.items.filter(x => x.kind === 'lesson').indexOf(it) + 1;
+        return `<h3 class="vhead" style="margin-top:22px" id="vl-${lv.n}">Level ${lv.n} · ${esc(lv.name)}</h3>
+          <div class="videos">${[...byVideo.values()].map(({ v, items }) => videoCard(v,
+            `<span class="tag gold">Level ${lv.n}</span>${items.map(it => `<span class="tag${it.kind === 'song' ? ' aqua' : ''}">${it.kind === 'song' ? 'Song' : 'Lesson ' + lessonNo(it)}</span>`).join('')}`,
+            'Play it: ' + items.map(it => `<a href="#/lesson/${it.id}">${esc(it.title)}</a>`).join(' · '))).join('')}</div>`;
+      }).join('')}`;
+    const target = focus && $('#vl-' + focus);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  }
+
   // ---------- lesson / song ----------
 
   const JUDGE_TEXT = { perfect: 'Perfect', good: 'Good', ok: 'OK', wrong: 'Wrong drum', extra: 'Extra note' };
@@ -352,6 +404,7 @@
     const voices = E.LANES.concat(['ho']).filter(v => tl.notes.some(n => n.voice === v));
     const nPat = Math.min(4, Math.max.apply(null, bars.map(b => b.patBar)) + 1);
     const padsOk = kid === 'keys';
+    const vid = C.videoFor(id);
 
     const legend = voices.map(v => {
       let how;
@@ -424,6 +477,13 @@
         <div class="card"><h2>Your drums</h2><div class="legend">${legend}</div>
           ${kid === 'keys' && !touch ? '<p class="muted small" style="margin-top:12px">Left hand on <kbd>A</kbd>–<kbd>G</kbd>, right hand on <kbd>H</kbd>–<kbd>L</kbd>, thumb on <kbd>Space</kbd> for the kick.</p>' : ''}</div>
       </div>
+      ${vid ? `<div class="card" style="margin-top:16px"><h2>Watch a teacher</h2>
+        <div class="watch">${videoHtml(vid)}
+          <div><h4>${esc(vid.title)}</h4>
+            <p class="muted small">${esc(vid.channel)} on YouTube${HOSTED ? '' : ` · ${ytLink(vid)}`}</p>
+            <p>${isSong ? 'This video teaches the main groove and fills in this song.' : 'This video teaches the same idea as this lesson.'} Watch it first, then press Play and try it yourself.${isMic ? ' Pause the video before you play, so the microphone only hears your drums.' : ''}</p>
+            <p class="small"><a href="#/videos/${lv.n}">More videos for Level ${lv.n} →</a></p></div>
+        </div></div>` : ''}
       <div class="card" style="margin-top:16px"><h2>${isSong ? 'Song map' : 'The pattern'}</h2>
         ${isSong ? songMap() : `<p class="muted small">${nPat > 1 ? `${nPat}-bar pattern` : 'One bar'}, played ${bars.length / nPat} times. Count along with the numbers on top.</p><canvas id="pat"></canvas>`}
       </div>`;
@@ -581,6 +641,7 @@
 
     async function begin(listen) {
       if (playing) return;
+      stopVideos();
       A.init();
       if (!listen && isMic && !I.mic.on) {
         whereEl.textContent = 'Turning on the microphone…';
@@ -1336,6 +1397,21 @@
   });
   document.addEventListener('pointerdown', () => { if (A.ctx) A.init(); }, { passive: true });
   $('#modal').addEventListener('click', e => { if (e.target.id === 'modal' && P.data.placed) closeModal(); });
+  // Clicking a video thumbnail swaps it for the YouTube player, and puts any other playing video back.
+  app.addEventListener('click', e => {
+    const thumb = e.target.closest('button.video[data-yt]');
+    if (!thumb) return;
+    stopVideos();
+    const f = document.createElement('iframe');
+    f.className = 'video';
+    f.src = `https://www.youtube-nocookie.com/embed/${thumb.dataset.yt}?autoplay=1&rel=0`;
+    f.title = thumb.getAttribute('aria-label').replace(/^Play /, '');
+    f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+    f.allowFullscreen = true;
+    f.referrerPolicy = 'strict-origin-when-cross-origin';
+    f._thumb = thumb;
+    thumb.replaceWith(f);
+  });
 
   window.addEventListener('hashchange', route);
   // Saved progress arrived from the hosted store. Redraw the overview pages; leave a lesson or

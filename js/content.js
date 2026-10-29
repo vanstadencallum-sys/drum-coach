@@ -977,5 +977,83 @@
     { level: 6, text: 'I play odd time signatures and double kick' },
   ];
 
-  DT.Content = { levels, byId, all, levelOf: id => lvOf[id] || null, PLACEMENT };
+  // Lessons by real drum teachers on YouTube: video id -> [title, channel].
+  const YT = {
+    '6nq-JeTUIEY': ['How to hold drumsticks', 'Drumeo'],
+    '5-QdeS4EYdE': ['Setting up a drum set', 'Drumeo'],
+    'et9hU7QMDYU': ['Your very first drum lesson', 'Drumeo'],
+    'kyWcuQW-tII': ['This should be everyone\'s first drum lesson', 'Stephen Taylor'],
+    'BnrYRliu1bI': ['Drumming warm-up for beginners', 'Drumeo'],
+    'ovh8gt86Bes': ['How to start reading drum music', 'Drew Wooton'],
+    'qc7wPNHCFnU': ['Playing drums to a metronome', 'Drum Beats Online'],
+    '6ChOzgjgSts': ['5 steps to using a practice pad', 'Ben Minal'],
+    'kr37ASNK3vA': ['A beginner\'s guide to electronic drums', 'Drumeo'],
+    '9e1LzcDDk5c': ['Quarter notes on the snare drum', 'Sight Read Drums'],
+    'EGJNmA-4wFE': ['How to count quarter notes', 'drumlessonscom'],
+    'lxROR3XF-Ms': ['Heel-up vs heel-down bass drum technique', 'DRUM! Magazine'],
+    '6BmPZifNZos': ['Absolute beginner? Start here', 'Stephen Taylor'],
+    '1co_WbX0gXo': ['How to count eighth notes', 'drumlessonscom'],
+    'E4WBysrD-sQ': ['Eighth-note beats', 'Drumeo'],
+    '0_wgVPMRaiM': ['How to play a single stroke roll', 'Drumeo'],
+    '_beWBRxDIQs': ['Syncopated kick drum grooves (play-along)', 'Sight Read Drums'],
+    '072oaOmpyW4': ['Bass drum beat variations', 'Howcast'],
+    'Zlb4ambk7MA': ['How to hit cymbals', 'Drumeo'],
+    '-KTsK29SDGI': ['Your first drum fills', 'Alejandro Sifuentes'],
+    '8XCHBwCQ3Oo': ['7 rock drum fills for beginners', 'Drumeo'],
+    'A3EcYcG827I': ['Opening and closing the hi-hat', 'Drumeo'],
+    'IP_AzJIeYl4': ['How to play a double stroke roll', 'Drumeo'],
+    'h0OoVP6VgBE': ['How to play a paradiddle', 'Drumeo'],
+    'PijU14IxGyQ': ['Two-handed 16th-note beats', 'Drumeo'],
+    'NdoKq0t2PBo': ['Ghost notes for beginners', 'Drumeo'],
+    '4XGTfRpLlbI': ['Sixteenth-note drum fills', 'Drumeo'],
+    'hwJcjkgr62E': ['Four-on-the-floor disco', 'DRUM! Magazine'],
+    'TtVfZ2ilfGc': ['The moving accent challenge', 'Sight Read Drums'],
+    'FjxhA-dJwg8': ['How to play the shuffle groove', 'That Swedish Drummer'],
+    'UA9Eh7nIHvQ': ['Triplet drum fills in 5 levels', 'Mike Johnston'],
+    '-xk9ivmlrBs': ['3 linear grooves any drummer can learn', 'That Swedish Drummer'],
+    'm4mLUIqmFJk': ['Syncopated kick and snare grooves (play-along)', 'Sight Read Drums'],
+    'THTMUZLg6ZI': ['The jazz ride cymbal pattern, with John Riley', 'ArtOfDrumming'],
+    '7zQmMK7uUAU': ['How to play a six stroke roll', 'Drumeo'],
+    'iUh8xw0zu-M': ['3 must-know 7/8 beats', 'Drumeo'],
+    'Cg5UuPUPT00': ['Odd-time beats in 5/4', 'Drumeo'],
+    '1kFUnyDs8VQ': ['Learn double bass in 10 minutes', 'Drumeo'],
+    'ZGmnZrzhdGU': ['Using your feet in drum fills', 'Drumeo'],
+    'vVGsYTFy2yE': ['How to play a paradiddle-diddle', 'Drumeo'],
+    '91kPRTIJcRU': ['How to play skank beats', 'Eugene Ryabchenko'],
+    'QVu3w6KNSB0': ['Polyrhythms: 3 over 4', 'Stephen Taylor'],
+    'pLzrw1toE6w': ['Displaced backbeats', 'The Drum Circle'],
+    '6GupX6_4GII': ['Grooving with 3s, 4s and 5s, with Gavin Harrison', 'Drumeo'],
+    'fJFMVUNtGl4': ['The secret to playing fast fills', 'Jeff Randall'],
+    '6ea0ut94RBY': ['The Rosanna shuffle', 'Drumeo'],
+    'cjFnSlvSy5o': ['Ultimate quintuplet drum lesson', 'Vic Firth'],
+    'M-jWR09rvI8': ['Advanced ghost notes', 'Drumeo'],
+  };
+  // Worth watching before the first lesson: [video id, what it covers].
+  const START_VIDEOS = [
+    ['6nq-JeTUIEY', 'Grip'], ['5-QdeS4EYdE', 'Kit setup'], ['et9hU7QMDYU', 'First lesson'],
+    ['kyWcuQW-tII', 'First lesson'], ['BnrYRliu1bI', 'Warm-up'], ['qc7wPNHCFnU', 'Timing'],
+    ['ovh8gt86Bes', 'Reading music'], ['6ChOzgjgSts', 'Practice pad'], ['kr37ASNK3vA', 'Electronic kit'],
+  ];
+  // The video that goes with each lesson and song.
+  const ITEM_VIDEO = {
+    'l1-first-notes': '9e1LzcDDk5c', 'l1-hihat-count': 'EGJNmA-4wFE', 'l1-kick': 'lxROR3XF-Ms', 'l1-backbeat': '6BmPZifNZos',
+    'l1-rock1': 'et9hU7QMDYU', 'l1-eighth-hats': '1co_WbX0gXo', 'l1-rock8': 'E4WBysrD-sQ', 's1-first-steps': 'E4WBysrD-sQ',
+    'l2-singles': '0_wgVPMRaiM', 'l2-kick-and': '_beWBRxDIQs', 'l2-kick-and2': '072oaOmpyW4', 'l2-crash': 'Zlb4ambk7MA',
+    'l2-first-fill': '-KTsK29SDGI', 'l2-tom-fill': '8XCHBwCQ3Oo', 'l2-open-hat': 'A3EcYcG827I', 's2-garage': '8XCHBwCQ3Oo', 's2-sunday': 'E4WBysrD-sQ',
+    'l3-doubles': 'IP_AzJIeYl4', 'l3-paradiddle': 'h0OoVP6VgBE', 'l3-16-hats': 'PijU14IxGyQ', 'l3-ghosts': 'NdoKq0t2PBo',
+    'l3-16-fill': '4XGTfRpLlbI', 'l3-disco': 'hwJcjkgr62E', 'l3-accents': 'TtVfZ2ilfGc', 's3-neon': 'hwJcjkgr62E', 's3-pocket': 'NdoKq0t2PBo',
+    'l4-shuffle': 'FjxhA-dJwg8', 'l4-trip-fill': 'UA9Eh7nIHvQ', 'l4-linear': '-xk9ivmlrBs', 'l4-sync-kick': 'm4mLUIqmFJk',
+    'l4-jazz': 'THTMUZLg6ZI', 'l4-six-stroke': '7zQmMK7uUAU', 's4-shuffle': 'FjxhA-dJwg8', 's4-bayou': 'm4mLUIqmFJk',
+    'l5-seven': 'iUh8xw0zu-M', 'l5-five': 'Cg5UuPUPT00', 'l5-double-kick': '1kFUnyDs8VQ', 'l5-sextuplets': 'ZGmnZrzhdGU',
+    'l5-pdd': 'vVGsYTFy2yE', 'l5-blast': '91kPRTIJcRU', 's5-odd': 'iUh8xw0zu-M', 's5-iron': '1kFUnyDs8VQ',
+    'l6-poly': 'QVu3w6KNSB0', 'l6-displaced': 'pLzrw1toE6w', 'l6-groups3': '6GupX6_4GII', 'l6-fast-fill': 'fJFMVUNtGl4',
+    'l6-halftime-shuffle': '6ea0ut94RBY', 'l6-quintuplets': 'cjFnSlvSy5o', 'l6-ghost-16': 'M-jWR09rvI8', 's6-boss': '6ea0ut94RBY',
+  };
+  const video = id => YT[id] ? { id, title: YT[id][0], channel: YT[id][1] } : null;
+  const startVideos = START_VIDEOS.map(([id, topic]) => Object.assign(video(id), { topic }));
+
+  DT.Content = {
+    levels, byId, all, levelOf: id => lvOf[id] || null, PLACEMENT,
+    startVideos, videoFor: itemId => video(ITEM_VIDEO[itemId]), VIDEO_IDS: Object.keys(YT), ITEM_VIDEO,
+  };
 })(typeof window !== 'undefined' ? window : globalThis);

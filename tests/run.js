@@ -76,5 +76,14 @@ for (const id of ['l1-hihat-count', 'l1-rock8']) {
   ok(r.next.type === 'slower' || r.next.type === 'again', `${it.id}: a weak run should suggest slowing down, got ${r.next.type}`);
 }
 
-console.log(`${C.levels.length} levels, ${C.all.length} lessons and songs, ${checks} checks, ${fails} failed`);
+// 5. Every lesson and song has a teaching video, and every video id looks like a real YouTube id.
+for (const id of C.VIDEO_IDS) ok(/^[A-Za-z0-9_-]{11}$/.test(id), `video ${id}: not an 11-character YouTube id`);
+for (const it of C.all) {
+  const v = C.videoFor(it.id);
+  ok(v && v.title && v.channel, `${it.id}: no teaching video`);
+}
+for (const id in C.ITEM_VIDEO) ok(C.byId[id], `video list names ${id}, which isn't a lesson or song`);
+ok(C.startVideos.length >= 3 && C.startVideos.every(v => v.title && v.topic), 'the "Start here" videos are missing or incomplete');
+
+console.log(`${C.levels.length} levels, ${C.all.length} lessons and songs, ${C.VIDEO_IDS.length} videos, ${checks} checks, ${fails} failed`);
 process.exit(fails ? 1 : 0);

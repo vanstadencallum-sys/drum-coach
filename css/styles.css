@@ -290,6 +290,54 @@ label.tog:hover { color: var(--text); }
 .song .tags { margin: 0; }
 .song .foot { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
 .minimap { display: flex; gap: 2px; height: 8px; border-radius: 4px; overflow: hidden; }
+
+/* ---------- teaching videos: a glossy thumbnail with an Aero play orb, swapped for the player on click ---------- */
+.videos { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.vcard {
+  display: flex; flex-direction: column; gap: 8px; min-width: 0;
+  background: var(--sheen), var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 12px 14px;
+  box-shadow: var(--bevel), var(--shadow);
+}
+.vcard h4 { margin: 2px 0 0; font-size: 15px; line-height: 1.35; }
+.vcard p { margin: 0; color: var(--muted); font-size: 13px; }
+.vcard p.go { color: var(--text); }
+.vcard .tags { margin: 0; }
+.video {
+  position: relative; display: grid; place-content: center; justify-items: center; gap: 10px;
+  width: 100%; max-width: 100%; aspect-ratio: 16 / 9; padding: 0; overflow: hidden; cursor: pointer;
+  border: 1px solid rgba(0, 10, 30, 0.75); border-radius: 8px; color: var(--text); font: inherit;
+  background: radial-gradient(120% 90% at 30% 10%, rgba(95, 208, 255, 0.35), rgba(4, 18, 42, 0) 60%), linear-gradient(160deg, #0d3d78, #04122a) center / cover no-repeat;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 14px rgba(0, 6, 22, 0.5);
+}
+button.video { background-color: #000; background-position: center; background-size: cover; background-repeat: no-repeat; }
+.video::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 42%, rgba(0, 0, 0, 0) 62%, rgba(0, 0, 0, 0.35));
+}
+.video:hover { text-decoration: none; }
+.video:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+iframe.video { display: block; cursor: auto; background: #000; }
+.vplay {
+  position: relative; width: 64px; height: 64px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 28%, #c4f2ff 0%, #3aa9f2 46%, #0a56b0 100%);
+  border: 1px solid rgba(0, 20, 50, 0.85);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 0 18px rgba(95, 208, 255, 0.55), 0 4px 10px rgba(0, 0, 0, 0.5);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.vplay::before {
+  content: ""; position: absolute; left: 9%; right: 9%; top: 4%; height: 46%; border-radius: 50% 50% 42% 42% / 64% 64% 36% 36%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.08));
+}
+.vplay::after {
+  content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-36%, -50%);
+  border-style: solid; border-width: 13px 0 13px 21px; border-color: transparent transparent transparent #fff;
+  filter: drop-shadow(0 1px 2px rgba(0, 30, 80, 0.6));
+}
+.video:hover .vplay, .video:focus-visible .vplay { transform: scale(1.08); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 0 28px rgba(95, 208, 255, 0.85), 0 4px 10px rgba(0, 0, 0, 0.5); }
+.vtext { position: relative; font-weight: 600; font-size: 14px; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6); }
+.watch { display: grid; grid-template-columns: minmax(0, 480px) minmax(0, 1fr); gap: 18px; align-items: start; }
+.watch h4 { margin: 0 0 2px; font-size: 16px; }
+.watch p { margin: 6px 0 0; }
 .minimap i { display: block; height: 100%; }
 .filters { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0 16px; }
 
@@ -299,6 +347,7 @@ label.tog:hover { color: var(--text); }
 .lesson-head .best { margin-left: auto; text-align: right; }
 .lesson-head .best .stars { font-size: 22px; }
 .stage { padding: 14px 14px 12px; scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 70px); }
+.vhead { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 70px); }
 .stage canvas {
   display: block; width: 100%; border-radius: 8px; background: var(--bg2);
   border: 1px solid rgba(0, 6, 18, 0.8); box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255, 255, 255, 0.12);
@@ -476,7 +525,7 @@ table.plain th { color: var(--muted); font-weight: 600; font-size: 12px; text-tr
 .choice .lv { color: var(--accent); font-weight: 700; font-size: 12px; min-width: 64px; text-transform: uppercase; letter-spacing: 0.06em; }
 
 @media (max-width: 900px) {
-  .hero, .cols, .feedback { grid-template-columns: 1fr; }
+  .hero, .cols, .feedback, .watch { grid-template-columns: 1fr; }
   .levels, .kits { grid-template-columns: 1fr 1fr; }
   .stats { grid-template-columns: repeat(4, 1fr); }
 }
@@ -486,7 +535,7 @@ table.plain th { color: var(--muted); font-weight: 600; font-size: 12px; text-tr
   .hero h1 { font-size: 27px; }
   main { padding-block: 14px 60px; }
   .top { position: relative; top: auto; padding-block: 8px 6px; gap: 8px; flex-wrap: wrap; }
-  .stage { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 8px); }
+  .stage, .vhead { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 8px); }
   .brand { font-size: 18px; }
   .orb { width: 32px; height: 32px; }
   .orb svg { width: 20px; height: 20px; }
@@ -526,5 +575,5 @@ table.plain th { color: var(--muted); font-weight: 600; font-size: 12px; text-tr
   .bpm .btn { padding-inline: 10px; }
   .beats { gap: 8px; }
   .modal .box { padding: 18px; }
-  .songs { grid-template-columns: 1fr; }
+  .songs, .videos { grid-template-columns: 1fr; }
 }
