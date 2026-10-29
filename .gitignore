@@ -1,0 +1,8 @@
+# Downloaded by phone.bat on first run.
+tools/
+# Your saved progress when running server.py.
+drumcoach-progress.json
+drumcoach-progress.json.tmp
+.netlify/
+.claude/
+__pycache__/

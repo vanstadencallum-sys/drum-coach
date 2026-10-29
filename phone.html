@@ -1,0 +1,35 @@
+<title>Drum Coach</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#0a2a55">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+
+<header class="top">
+  <a class="brand" href="#/home" aria-label="Drum Coach home">
+    <span class="orb"><svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="26" rx="22" ry="8" fill="#f2fbff"/><path d="M10 26v16c0 5 10 9 22 9s22-4 22-9V26" fill="#bfeaff" opacity="0.9"/><path d="M10 26c0 5 10 9 22 9s22-4 22-9" fill="none" stroke="#0b4796" stroke-width="2"/><path d="M16 4l13 17M48 4L35 21" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg></span>
+    <span>Drum <b>Coach</b></span>
+  </a>
+  <nav class="nav">
+    <a href="#/home" data-nav="home">Learn</a>
+    <a href="#/songs" data-nav="songs">Songs</a>
+    <a href="#/free" data-nav="free">Practice</a>
+    <a href="#/setup" data-nav="setup">Setup</a>
+  </nav>
+  <a class="kit-badge" id="kitBadge" href="#/setup" title="Change what you're playing on"></a>
+</header>
+
+<main id="app" tabindex="-1"></main>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<div id="modal" class="modal" hidden></div>
+
+<!-- The hosted link: tap pads only (no microphone or USB drums here), progress kept per person. -->
+<script>window.DT_HOSTED = true;</script>
+<script src="js/engine.js"></script>
+<script src="js/content.js"></script>
+<script src="js/progress.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/input.js"></script>
+<script src="js/notation.js"></script>
+<script src="js/main.js"></script>

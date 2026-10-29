@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0a2a55">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Drum Coach</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%231b74c9'/%3E%3Cellipse cx='32' cy='27' rx='17' ry='6' fill='%23eaf8ff'/%3E%3Cpath d='M15 27v12c0 4 8 7 17 7s17-3 17-7V27' fill='%2392dcff'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/styles.css?v=3">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="#/home" aria-label="Drum Coach home">
+      <span class="orb"><svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="26" rx="22" ry="8" fill="#f2fbff"/><path d="M10 26v16c0 5 10 9 22 9s22-4 22-9V26" fill="#bfeaff" opacity="0.9"/><path d="M10 26c0 5 10 9 22 9s22-4 22-9" fill="none" stroke="#0b4796" stroke-width="2"/><path d="M16 4l13 17M48 4L35 21" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg></span>
+      <span>Drum <b>Coach</b></span>
+    </a>
+    <nav class="nav">
+      <a href="#/home" data-nav="home">Learn</a>
+      <a href="#/songs" data-nav="songs">Songs</a>
+      <a href="#/free" data-nav="free">Practice</a>
+      <a href="#/setup" data-nav="setup">Setup</a>
+    </nav>
+    <a class="kit-badge" id="kitBadge" href="#/setup" title="Change what you're playing on"></a>
+  </header>
+
+  <main id="app" tabindex="-1"></main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="modal" class="modal" hidden></div>
+
+  <noscript><p style="padding:24px">Drum Coach needs JavaScript turned on.</p></noscript>
+
+  <!-- ?v= makes browsers fetch fresh copies after an update. Raise it when these files change. -->
+  <script src="js/engine.js?v=3"></script>
+  <script src="js/content.js?v=3"></script>
+  <script src="js/progress.js?v=3"></script>
+  <script src="js/audio.js?v=3"></script>
+  <script src="js/input.js?v=3"></script>
+  <script src="js/notation.js?v=3"></script>
+  <script src="js/main.js?v=3"></script>
+</body>
+</html>
